@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RealMeety — Preview dev</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        min-height: 100vh;
+        background: #0a0a0f;
+        color: #e8e8ef;
+        font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 12px 28px;
+      }
+      .banner {
+        max-width: 420px;
+        width: 100%;
+        margin-bottom: 16px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        background: rgba(255, 77, 109, 0.12);
+        border: 1px solid rgba(255, 77, 109, 0.35);
+        font-size: 12px;
+        line-height: 1.45;
+        text-align: center;
+      }
+      .banner strong { color: #ff4d6d; }
+      h1 { font-size: 14px; opacity: 0.6; margin-bottom: 14px; font-weight: 600; }
+      .phone {
+        width: 390px;
+        max-width: 100%;
+        height: 844px;
+        max-height: calc(100vh - 120px);
+        border-radius: 44px;
+        padding: 12px;
+        background: linear-gradient(145deg, #2a2a32, #1a1a20);
+        box-shadow: 0 0 0 2px #3a3a44, 0 24px 80px rgba(0, 0, 0, 0.55);
+        position: relative;
+      }
+      .phone__notch {
+        position: absolute;
+        top: 18px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 28px;
+        background: #0a0a0f;
+        border-radius: 0 0 16px 16px;
+        z-index: 2;
+        pointer-events: none;
+      }
+      .phone__screen {
+        width: 100%;
+        height: 100%;
+        border-radius: 36px;
+        overflow: hidden;
+        background: #0d0d12;
+      }
+      #app-root {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      .hint {
+        margin-top: 12px;
+        font-size: 11px;
+        opacity: 0.45;
+        text-align: center;
+      }
+      .hint code {
+        background: rgba(255,255,255,0.08);
+        padding: 2px 5px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="banner">
+      <strong>Outil dev</strong> — Preview navigateur en format téléphone.
+      L’app de production reste <strong>mobile native</strong> (Lynx / stores).
+    </div>
+    <h1>RealMeety · preview web</h1>
+    <div class="phone">
+      <div class="phone__notch" aria-hidden="true"></div>
+      <div class="phone__screen">
+        <div id="app-root"></div>
+      </div>
+    </div>
+    <p class="hint">Backend : <code>npm run dev:api</code> sur localhost:3001</p>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

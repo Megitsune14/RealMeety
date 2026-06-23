@@ -1,0 +1,24 @@
+{
+  "name": "realmeety",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "backend"
+  ],
+  "scripts": {
+    "postinstall": "node scripts/patch-lynx-web.mjs",
+    "dev": "npm run dev --workspace=backend & npm run dev --workspace=@realmeety/lynx",
+    "dev:lynx": "npm run dev --workspace=@realmeety/lynx",
+    "dev:preview": "npm run dev --workspace=@realmeety/preview-web",
+    "dev:api": "npm run dev --workspace=@realmeety/backend",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  }
+}

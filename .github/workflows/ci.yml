@@ -2,63 +2,37 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, master]
   pull_request:
-    branches: [main]
+    branches: [main, master]
 
 jobs:
-  build-and-test:
+  api:
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgis/postgis:16-3.4
-        env:
-          POSTGRES_USER: realmeety
-          POSTGRES_PASSWORD: realmeety
-          POSTGRES_DB: realmeety
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U realmeety"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-      redis:
-        image: redis:7-alpine
-        ports:
-          - 6379:6379
-
-    env:
-      DATABASE_URL: postgresql://realmeety:realmeety@localhost:5432/realmeety
-      REDIS_URL: redis://localhost:6379
-      JWT_SECRET: ci-test-secret
-
+    defaults:
+      run:
+        working-directory: API
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
-
+          cache-dependency-path: API/package-lock.json
       - run: npm ci
+      - run: npm run build
+      - run: npm test
 
-      - name: Build shared package
-        run: npm run build --workspace=@realmeety/shared
-
-      - name: Typecheck
-        run: npm run typecheck --workspaces --if-present
-
-      - name: Run migrations
-        run: npm run migrate --workspace=@realmeety/backend
-
-      - name: Backend tests
-        run: npm run test --workspace=@realmeety/backend
-
-      - name: Build Lynx app
-        run: npm run build --workspace=@realmeety/lynx
-
-      - name: Build backend
-        run: npm run build --workspace=@realmeety/backend
+  app:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test

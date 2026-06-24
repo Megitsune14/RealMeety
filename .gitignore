@@ -1,8 +1,3 @@
-node_modules/
-dist/
 .env
-*.lynx.bundle
-.DS_Store
 *.log
-.temp-templates/
-coverage/
+.DS_Store

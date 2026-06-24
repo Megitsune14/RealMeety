@@ -1,0 +1,5 @@
+# Copier vers android/key.properties (ne pas committer)
+storePassword=your-store-password
+keyPassword=your-key-password
+keyAlias=realmeety
+storeFile=../keystore/realmeety-release.jks

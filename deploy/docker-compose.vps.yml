@@ -1,0 +1,55 @@
+# Production — VPS UE (sans MongoDB local, utilise Atlas)
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+      - app-web
+    restart: always
+
+  api:
+    build:
+      context: ../API
+      target: production
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      MONGODB_URI: ${MONGODB_URI}
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET}
+      CORS_ORIGIN: ${CORS_ORIGIN}
+      APP_URL: ${APP_URL}
+      KYC_PROVIDER: ${KYC_PROVIDER:-stripe}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      BETA_MODE: ${BETA_MODE:-true}
+      BETA_CENTER_LAT: ${BETA_CENTER_LAT:-48.8566}
+      BETA_CENTER_LNG: ${BETA_CENTER_LNG:-2.3522}
+      BETA_RADIUS_METERS: ${BETA_RADIUS_METERS:-5000}
+    depends_on:
+      - redis
+    restart: always
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+
+  app-web:
+    build:
+      context: ../app
+      dockerfile: Dockerfile.web
+      args:
+        API_BASE_URL: ${API_BASE_URL:-https://api.realmeety.example}
+    restart: always
+
+volumes:
+  caddy_data:
+  caddy_config:

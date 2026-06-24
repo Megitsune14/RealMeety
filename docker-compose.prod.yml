@@ -2,35 +2,25 @@ services:
   api:
     build:
       context: ./API
-      target: development
+      target: production
     ports:
       - "3000:3000"
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       PORT: 3000
       MONGODB_URI: mongodb://mongo:27017/realmeety
       REDIS_URL: redis://redis:6379
-      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production-min16}
-      JWT_EXPIRES_IN: 15m
-      JWT_REFRESH_EXPIRES_IN: 7d
-      CORS_ORIGIN: http://localhost:8080
-      APP_URL: http://localhost:8080
-      KYC_PROVIDER: mock
-      BETA_MODE: "false"
+      JWT_SECRET: ${JWT_SECRET}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:8080}
     depends_on:
       mongo:
         condition: service_healthy
       redis:
         condition: service_started
-    volumes:
-      - ./API/src:/app/src
-      - ./API/package.json:/app/package.json
-    restart: unless-stopped
+    restart: always
 
   mongo:
     image: mongo:7
-    ports:
-      - "27017:27017"
     volumes:
       - mongo_data:/data/db
     healthcheck:
@@ -38,13 +28,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    restart: unless-stopped
+    restart: always
 
   redis:
     image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    restart: unless-stopped
+    restart: always
 
   app-web:
     build:
@@ -54,7 +42,7 @@ services:
       - "8080:80"
     depends_on:
       - api
-    restart: unless-stopped
+    restart: always
 
 volumes:
   mongo_data:
